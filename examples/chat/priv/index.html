@@ -28,6 +28,8 @@
       }; 
 
       function onOpen(evt) { 
+        $("#username").html("Username: " + $("#username-data").val());
+        $("#content").hide();
         jQuery('#roomContainer').fadeIn('slow');
       };  
 
@@ -47,7 +49,7 @@
       function sendMessage() {
         if(websocket.readyState == websocket.OPEN){
           var txt = jQuery("#textToSend").val();
-          websocket.send(txt);
+          websocket.send($("#username-data").val() + ":" + txt);
           jQuery("#textToSend").val("");
         } else {
            showAlert('<span style="color: red;">ERROR: websocket is not ready</span>');
@@ -55,7 +57,8 @@
       };
 
       function showMessage(data) {
-        jQuery('#chatContainer').append('<div>' + data.sender + ' -> ' + data.msg + '</div>');
+        var field = data.msg.split(":");
+        jQuery('#chatContainer').append('<div>' + field[0] + ' -> ' + field[1] + '</div>');
       };
 
       function showAlert(txt) {
@@ -73,7 +76,11 @@
   </head>
   <body>
     <div id="alertContainer"></div>
+    <div id="username">First name:</div>
+    <div id="content">
+    <input type="text" id="username-data"><br>
     <input id="connectButton" type="button" value="Join the Chat Room!" onclick="connect();"/>
+    </div>
 
     <div id="roomContainer">
       <div id="chatContainer"></div>
